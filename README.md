@@ -27,4 +27,15 @@ Start the development server on `http://localhost:3000`:
 npm run dev
 ```
 
+Access Urls:
 
+Index Page > `http://localhost:3000`: where login page is
+
+Main Products Page > `http://localhost:3000/products`
+Where you can add, edit or delete any product.
+
+Main Category Page > `http://localhost:3000/categories`
+Where you can View all categories sections with products that can be edited or deleted as well.
+
+
+Definitly requires many validations to be done on the Login and on the CRUD Operations as well.

@@ -27,16 +27,16 @@
 
     const userCreds = reactive({ email: '', password: '' });
 
-    // const email = ref("");
+
     const hidePassword = ref(true);
-    // const password = ref("");
+
 
     const passwordFieldIcon = computed(() => hidePassword.value ? "mdi-eye" : "mdi-eye-off");
     const passwordFieldType = computed(() => hidePassword.value ? "password" : "text");
 
     const doLogin = function() {
         localStorage.setItem('UserCredentials', JSON.stringify(userCreds));
-        navigateTo('/');
+        navigateTo('/products');
     };
 
 </script>

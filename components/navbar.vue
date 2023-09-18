@@ -29,7 +29,7 @@
                 <v-divider></v-divider>
 
                 <v-list>
-                    <NuxtLink to="/">
+                    <NuxtLink to="/products">
                         <v-list-item prepend-icon="mdi-shopping" title="Products" value="products"></v-list-item>
                     </NuxtLink>
                     <NuxtLink to="/categories">
