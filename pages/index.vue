@@ -1,138 +1,113 @@
 <template>
-    <div class="main-content" id="products">
-        <h1>Products</h1>
-        <div class="addProduct">
-            <button @click="dialog = true">Add New Product</button>
-        </div>
-        <product-card v-for="product in products"
-                      :product="product"
-                      :key="product.id"
-                      :id="product.id"
-        >
-        </product-card>
+    <div class="login-form">
+        <h1>The Store Admin Panel</h1>
 
-        <v-dialog
-                v-model="dialog"
-                width="auto"
-        >
-            <form @submit.prevent="dialog=false; addProduct()">
-                <i class="mdi mdi-close" @click="dialog = false"></i>
+        <div id="form">
+            <form @submit.prevent="doLogin">
+                <label for="email">Email</label>
+                <input type="text" id="email" v-model="userCreds.email" placeholder="elon@musk.io" autocomplete="off">
 
-                <label for="image">Image URL</label>
-                <input type="text" id="image" v-model="productToAdd.image" placeholder="Image URL">
+                <label for="password">Password</label>&nbsp;
+                <i class="mdi" :class="[passwordFieldIcon]" @click="hidePassword = !hidePassword"></i>
+                <input :type="passwordFieldType" id="password" v-model="userCreds.password" placeholder="**********">
 
-                <label for="title">Title</label>
-                <input type="text" id="title" v-model="productToAdd.title" placeholder="Title" autocomplete="off">
-
-                <label for="description">Description</label>&nbsp;
-                <input type="text" id="description" v-model="productToAdd.description" placeholder="Description">
-
-                <label for="price">Price</label>
-                <input type="number" id="price" v-model="productToAdd.price" placeholder="price">
-
-
-                <label for="category">Category</label>
-                <select name="category" id="category" v-model="productToAdd.category">
-                    <option v-for="category in categories" :value="category">{{category}}</option>
-                </select>
-
-                <button type="submit">Add</button>
+                <button type="submit">Log in</button>
             </form>
-        </v-dialog>
+        </div>
 
     </div>
 </template>
+<script setup>
+    import { computed, reactive, ref } from "vue";
+
+
+    definePageMeta({
+        layout: "login"
+    });
+
+    const userCreds = reactive({ email: '', password: '' });
+
+    // const email = ref("");
+    const hidePassword = ref(true);
+    // const password = ref("");
+
+    const passwordFieldIcon = computed(() => hidePassword.value ? "mdi-eye" : "mdi-eye-off");
+    const passwordFieldType = computed(() => hidePassword.value ? "password" : "text");
+
+    const doLogin = function() {
+        localStorage.setItem('UserCredentials', JSON.stringify(userCreds));
+        navigateTo('/');
+    };
+
+</script>
 <style lang="scss" scoped>
-    .main-content {
-        display: flex;
-        flex-wrap: wrap;
-        flex-direction: row;
-        margin-top: 100px;
-        justify-content: center;
-        
+    .login-form {
+        max-width: 500px;
+        margin: auto;
+        margin-top: 150px;
+        padding: 30px;
+
         h1{
-            width: 100%;
-            margin-bottom: 34px;
             text-align: center;
-        }
-
-        .addProduct {
-            width: 100%;
-            margin: 0 105px 36px;
-            display: flex;
-            justify-content: flex-end;
-
-            button {
-                background: linear-gradient(160deg, #73cad4, #3756a2);
-                width: max-content;
-                color: #FFF;
-                padding: 8px;
-                text-align: center;
-                border-radius: 3px;
-                align-self: end;
-            }
+            margin-bottom: 50px;
         }
     }
 
-    form {
-        width: 400px;
-        background-color: white;
-        padding: 16px 24px;
-        display: flex;
-        flex-direction: column;
-        border-radius: 2px;
+    div#form {
+        background-color: #34495e;
+        border-radius: 5px;
+        box-shadow: 0px 0px 30px 0px #666;
+        color: #ecf0f1;
+        padding: 35px;
 
-        .mdi-close {
-            align-self: flex-end;
-            font-size: 20px;
-            margin-bottom: 16px;
+        label,input {
+            outline: none;
+            width: 100%;
         }
 
-        input, select {
-            background-color: #34495e;
-            color: white;
-            padding: 8px 16px;
-            border-radius: 2px;
-            margin: 8px 0 24px;
+        label {
+            color: #95a5a6;
+            font-size: 1em;
+        }
+
+        input {
+            background-color: transparent;
+            border: none;
+            color: #ecf0f1;
+            font-size: 1em;
+            margin-bottom: 20px;
+        }
+
+        ::placeholder {
+            color: #ecf0f1;
+            opacity: 1;
         }
 
         button {
-            background: linear-gradient(160deg, #73cad4, #3756a2);
-            align-self: flex-end;
-            border-radius: 5px;
-            width: 100px;
-            padding: 8px;
-            color: white;
+            background-color: white;
+            color: #34495e;;
+            cursor: pointer;
+            border: none;
+            padding: 10px;
+            transition: background-color 0.2s ease-in-out;
+            width: 100%;
+            font-weight: bold;
+
+            &:hover {
+                background-color: #eeeeee;
+            }
         }
-    }
-</style>
-<script setup>
-    import { reactive } from "vue";
-    import {useFetch} from "../.nuxt/imports";
 
-    // definePageMeta({
-    //     middleware: 'auth',
-    // })
-    let products = reactive([]);
-    await fetch('https://fakestoreapi.com/products').then((res)=> res.json()).then(function(res){
-        console.log(res,'resresresres')
-         products = res
-    });
-    const {data: categories} = await useFetch('https://fakestoreapi.com/products/categories');
+        @media screen and (max-width: 600px) {
+                border-radius: unset;
+                box-shadow: unset;
+                width: 100%;
 
-    const productToAdd = reactive({ image: '', title: '', description: '', price: 0, category: '' });
-
-    const addProduct = function(event){
-        products.push({...productToAdd});
-    }
-</script>
-<script>
-    export default {
-        data() {
-            return {
-                dialog:false,
-
+            & form {
+                margin: 0 auto;
+                max-width: 280px;
+                width: 100%;
             }
         }
     }
-</script>
+</style>
